@@ -3,25 +3,36 @@ version 37
 __lua__
 
 local game_objects
+local mouse_mode = true
 
 function _init()
 	game_objects={}
 
+	-- Enable mouse support
+	poke(0x5f2d, 1)
+
 	-- Create the cursor
 	cursor=make_game_object("cursor",0,0,3,3,{
 		update=function(self)
-
-			-- Keyboard controls
-			if btn(⬅️) then
-				self.x-=1
-			elseif btn(➡️) then
-				self.x+=1
+			-- Mouse controls
+			if mouse_mode then
+				self.x=stat(32)
+				self.y=stat(33)
 			end
 
-			if btn(⬆️) then
-				self.y-=1
-			elseif btn(⬇️) then
-				self.y+=1
+			-- Keyboard controls
+			if not mouse_mode then
+				if btn(⬅️) then
+					self.x-=1
+				elseif btn(➡️) then
+					self.x+=1
+				end
+
+				if btn(⬆️) then
+					self.y-=1
+				elseif btn(⬇️) then
+					self.y+=1
+				end
 			end
 
 			-- Check collisions with the border
@@ -95,6 +106,8 @@ function _draw()
 		local obj = game_objects[i]
 		obj:draw()
 	end
+
+	print("mouse_mode (🅾️): "..tostr(mouse_mode), 1, 1, 1)
 end
 
 function make_game_object(name,x,y,width,height,props)
