@@ -3,7 +3,7 @@ version 37
 __lua__
 
 local game_objects
-local mouse_mode = true
+local fast_mode = true
 
 function _init()
 	game_objects={}
@@ -20,17 +20,24 @@ function _init()
 				self.y=stat(33)
 			end
 
+			-- Setup the button check function depending on fast mode
+			if fast_mode then
+				btn_check = btn
+			else
+				btn_check = btnp
+			end
+
 			-- Keyboard controls
 			if not mouse_mode then
-				if btn(⬅️) then
+				if btn_check(⬅️) then
 					self.x-=1
-				elseif btn(➡️) then
+				elseif btn_check(➡️) then
 					self.x+=1
 				end
 
-				if btn(⬆️) then
+				if btn_check(⬆️) then
 					self.y-=1
-				elseif btn(⬇️) then
+				elseif btn_check(⬇️) then
 					self.y+=1
 				end
 			end
