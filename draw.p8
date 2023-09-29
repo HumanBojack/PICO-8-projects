@@ -1,6 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 37
 __lua__
+-- draw
+-- by humanbojack
 
 local game_objects
 local mouse_mode = false
