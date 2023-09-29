@@ -3,7 +3,9 @@ version 37
 __lua__
 
 local game_objects
+local mouse_mode = false
 local fast_mode = true
+local cursor
 
 function _init()
 	game_objects={}
@@ -12,7 +14,7 @@ function _init()
 	poke(0x5f2d, 1)
 
 	-- Create the cursor
-	cursor=make_game_object("cursor",0,0,3,3,{
+	cursor=make_game_object("cursor",64,64,3,3,{
 		update=function(self)
 			-- Mouse controls
 			if mouse_mode then
@@ -89,6 +91,14 @@ function _init()
 		end,
 		draw=function(self)
 			spr(0, self.x - flr(self.width/2), self.y - flr(self.height/2))
+		end,
+		check_for_hit=function(self,other)
+			local x,y = self:center()
+
+			-- Check if the cursor is overlapping with the other object
+			return x >= other.x and x <= other.x + other.width and y >= other.y and y <= other.y + other.height
+		end
+	})
 		end
 	})
 
@@ -108,6 +118,7 @@ end
 function _draw()
 	cls(7)
 
+	print("x: "..tostr(cursor.x)..", y: "..tostr(cursor.y), 1, 1, 1)
 	for i = #game_objects, 1, -1 do
 		local obj = game_objects[i]
 		obj:draw()
