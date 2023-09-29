@@ -99,6 +99,64 @@ function _init()
 			return x >= other.x and x <= other.x + other.width and y >= other.y and y <= other.y + other.height
 		end
 	})
+
+	-- Create the menu
+	mouse_mode_button=make_game_object("button", 3, 119, 8, 8, {
+		update=function(self)
+			if btnp(🅾️) then
+				-- check if the cursor is overlapping with our button
+				if cursor:check_for_hit(self) then
+					mouse_mode = not mouse_mode
+				end
+			end
+		end,
+		draw=function(self)
+			-- Draw the corresponding icon
+			if mouse_mode then
+				spr(1, self.x, self.y)
+			else
+				spr(2, self.x, self.y)
+			end
+		end
+	})
+
+	fast_mode_button=make_game_object("button", 13, 119, 8, 8, {
+		update=function(self)
+			if btnp(🅾️) then
+				-- check if the cursor is overlapping with our button
+				if cursor:check_for_hit(self) then
+					fast_mode = not fast_mode
+				end
+			end
+		end,
+		draw=function(self)
+			-- Draw the corresponding icon (only if mouse_mode is disabled)
+			if not mouse_mode then
+				if not fast_mode then
+					spr(3, self.x, self.y)
+				else
+					spr(4, self.x, self.y)
+				end
+			end
+		end
+	})
+
+	clear_button=make_game_object("button", 23, 119, 8, 8, {
+		update=function(self)
+			if btnp(🅾️) then
+				-- check if the cursor is overlapping with our button
+				if cursor:check_for_hit(self) then
+					-- Delete all the pixels
+					for_each_game_object("pixel",
+						function(other)
+							del(game_objects, other)
+						end
+					)
+				end
+			end
+		end,
+		draw=function(self)
+			spr(5, self.x, self.y)
 		end
 	})
 
@@ -109,22 +167,21 @@ function _update()
 	for obj in all(game_objects) do
 		obj:update()
 	end
-
-	if btnp(🅾️) then
-		mouse_mode = not mouse_mode
-	end
 end
 
 function _draw()
 	cls(7)
 
+	-- Draw the menu
+	rectfill(0,117,127,127,1)
 	print("x: "..tostr(cursor.x)..", y: "..tostr(cursor.y), 1, 1, 1)
+
+	-- Draw the game objects
 	for i = #game_objects, 1, -1 do
 		local obj = game_objects[i]
 		obj:draw()
 	end
 
-	print("mouse_mode (🅾️): "..tostr(mouse_mode), 1, 1, 1)
 end
 
 function make_game_object(name,x,y,width,height,props)
@@ -167,8 +224,9 @@ end
 
 __gfx__
 08000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-80800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-08000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-__map__
-__sfx__
-__music__
+80800000007770000777777000770000770077000007700000000000000000000000000000000000000000000000000000000000000000000000000000000000
+08000000070707007000000700077000077007700777777000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000070707007707070700007700007700770070070000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000070007007070707700007700007700770070070000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000070007007000000700077000077007700070070000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000007770000777777000770000770077000077770000000000000000000000000000000000000000000000000000000000000000000000000000000000
