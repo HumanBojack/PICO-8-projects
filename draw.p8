@@ -84,7 +84,6 @@ function _init()
 			spr(0, self.x - flr(self.width/2), self.y - flr(self.height/2))
 		end
 	})
-	add(game_objects, cursor)
 
 end
 
