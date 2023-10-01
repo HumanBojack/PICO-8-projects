@@ -4,14 +4,17 @@ __lua__
 -- cave diver
 -- by humanbojack, based on dylan bennett
 local player
+local cave
 
 function _init()
 	game_over=false
+	cave=make_cave()
 	player=make_player(24,60)
 end
 
 function _update()
 	if (not game_over) then
+		cave:update()
 		player:update()
 	else
 		-- restart
@@ -21,6 +24,7 @@ end
 
 function _draw()
 	cls()
+	cave:draw()
 	player:draw()
 	
 	if game_over then
@@ -93,6 +97,47 @@ function make_player(x,y)
 		end
 	}
 	return player
+end
+-->8
+function make_cave()
+	cave={
+		ceiling_min=3,
+		ceiling_max=45,
+		floor_min=124,
+		floor_max=89,
+		ceiling={5},
+		floor={100},
+		-- functions
+		update=function(self)
+			-- remove the back of the cave
+			if (#self.ceiling>player.velocity_x) then
+				for i=1,player.velocity_x do
+					del(self.ceiling,self.ceiling[1])			
+					del(self.floor,self.floor[1])
+				end
+			end
+			
+			-- generate the front of the cave
+			while (#self.ceiling<128) do
+				-- generate rnd between -1 and 1
+				local top_change=flr(rnd(3)-1)
+				local btm_change=flr(rnd(3)-1)
+				
+				local top=mid(self.ceiling_min,self.ceiling[#self.ceiling]+top_change,self.ceiling_max)
+				local btm=mid(self.floor_min,self.floor[#self.floor]+btm_change,self.floor_max)
+				
+				add(self.ceiling, top)
+				add(self.floor, btm)
+			end
+		end,
+		draw=function(self)
+			for i=1, #cave.ceiling do
+				line(i-1,0,i-1,self.ceiling[i],5)
+				line(i-1,127,i-1,self.floor[i],5)
+			end
+		end
+	}
+	return cave
 end
 __gfx__
 00000000000000007007000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
