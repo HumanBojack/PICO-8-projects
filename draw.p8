@@ -17,6 +17,7 @@ function _init()
 
 	-- Create the cursor
 	cursor=make_game_object("cursor",64,64,3,3,{
+		color=5,
 		update=function(self)
 			-- Mouse controls
 			if mouse_mode then
@@ -76,7 +77,7 @@ function _init()
 				obj = make_game_object(
 					"pixel", self.x, self.y, 1, 1,
 					{
-						color=5,
+						color=self.color,
 						draw=function(self)
 							pset(self.x, self.y, self.color)
 						end,
@@ -162,6 +163,22 @@ function _init()
 		end,
 		draw=function(self)
 			spr(5, self.x, self.y)
+		end
+	})
+
+	color_btn=make_game_object("button", 33, 119, 8, 8, {
+		update=function(self)
+			if btnp(🅾️) then
+				-- check if the cursor is overlapping with our button
+				if cursor:check_for_hit(self) then
+					-- Change the color of the cursor
+					cursor.color = (cursor.color + 1) % 16
+					sfx(0)
+				end
+			end
+		end,
+		draw=function(self)
+			rectfill(self.x, self.y, self.x + self.width-1, self.y + self.height-1, cursor.color)
 		end
 	})
 
