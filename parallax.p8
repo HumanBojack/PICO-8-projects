@@ -42,12 +42,20 @@ function game_init()
 
   animation=0
   anim_length=144
+
+  car_spd=0
 end
 
 function game_update()
 	if (btnp(🅾️)) gameover_init()
+  if (btnp(➡️)) then
+    car_spd = min(car_spd + 1, 3)
+  end
+  if (btnp(⬅️)) then
+    car_spd = max(car_spd - 1, 0)
+  end
 
-  animation+=1
+  animation+=car_spd
   animation%=anim_length
 end
 
@@ -56,6 +64,9 @@ function game_draw()
 
   -- display the animation frame
   print(animation, 0, 0, 7)
+
+  -- display the car speed
+  print(car_spd, 0, 8, 7)
 
 
   -- draw the mountains from the spritesheet
