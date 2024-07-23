@@ -41,14 +41,14 @@ function game_init()
 	_draw=game_draw
 
   animation=0
+  anim_length=144
 end
 
 function game_update()
 	if (btnp(🅾️)) gameover_init()
 
   animation+=1
-  -- animation%=100
-  animation%=96
+  animation%=anim_length
 end
 
 function game_draw()
@@ -60,15 +60,14 @@ function game_draw()
 
   -- draw the mountains from the spritesheet
   local mtain_w = 24
-  local offset = (animation / 4 ) % mtain_w
-
+  local offset = get_offset(mtain_w, 1)
   for x = 0, 127 + mtain_w, mtain_w do
     spr(1, x - offset, 64, 3, 2)
   end
   
   -- draw the trees
   local tree_w = 16
-  local offset = (animation / 2) % tree_w
+  local offset = get_offset(tree_w, 2)
   for x = 0, 127 + tree_w, tree_w do
     spr(12, x - offset, 90, 2, 2)
   end
@@ -78,7 +77,7 @@ function game_draw()
 
   -- draw the road
   local road_w = 8
-  local offset = (animation) % road_w
+  local offset = get_offset(road_w, anim_length / road_w)
 
   for x = 0, 127 + road_w, road_w do
     spr(5, x - offset, 115)
@@ -87,7 +86,8 @@ function game_draw()
   -- draw the car
   car_x = 50
   car_y = 100
-  spr(6, car_x, car_y, 4, 2)
+  bump = (animation % anim_length) <= 5 and 1 or 0
+  spr(6, car_x, car_y - bump, 4, 2)
 
   local wheel_r = flr(animation / 4) % 4
   local flip_y = flr(wheel_r / 2) * 2 - 1 == -1
@@ -95,6 +95,10 @@ function game_draw()
   
   spr(wheel_spr, car_x + 8, car_y + 14, 0.5, 0.5, false, flip_y)
   spr(wheel_spr, car_x + 25, car_y + 14, 0.5, 0.5, false, flip_y)
+end
+
+function get_offset(item_w, repetitions)
+  return flr((animation * repetitions) / (anim_length / item_w)) % item_w
 end
 
 -->8
